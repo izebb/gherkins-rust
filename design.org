@@ -1,0 +1,89 @@
+#+title: Design Document
+
+
+** Sample Feature
+#+BEGIN_SRC gherkin
+@shopping @regression
+Feature: Shopping Cart Management
+  As an online shopper
+  I want to manage items in my cart
+  So that I can purchase products
+
+  Background:
+    Given the user is logged in
+    And the shopping cart is empty
+
+  @smoke
+  Scenario: Add single item to cart
+    Given I am viewing a product "Laptop"
+    When I click the "Add to Cart" button
+    Then the cart should contain 1 item
+    And the cart total should be "$999"
+
+  Scenario Outline: Add multiple items
+    When I add <quantity> "<product>" to the cart
+    Then the cart should contain <quantity> items
+    And the subtotal should be "<total>"
+
+    Examples:
+      | product | quantity | total   |
+      | Laptop  | 2        | $1998   |
+      | Mouse   | 5        | $125    |
+      | Keyboard| 1        | $79     |
+
+  @negative
+  Scenario: Cannot add out of stock item
+    Given the product "Rare Item" is out of stock
+    When I try to add it to the cart
+    Then I should see an error message
+    But the cart should remain empty
+#+END_SRC
+
+** Keyword
+**** Feature-level:
+
+*Feature*: - Describes the feature being tested
+*Background*: - Steps that run before each scenario
+*Rule*: - Logical grouping for scenarios (Gherkin 6+)
+
+**** Scenario-level:
+
+*Scenario*: - Defines a single test scenario
+*Scenario Outline*: or *Scenario Template*: - Defines a parameterized scenario
+*Examples*: or *Scenarios*: - Provides data tables for Scenario Outlines
+
+**** Step keywords:
+
+*Given* - Preconditions/initial context
+*When* - Actions/events
+*Then* - Expected outcomes/assertions
+*And* - Continues the previous step type
+*But* - Continues the previous step type (typically for negative cases)
+`*` Wildcard that can replace any step keyword
+
+**** Additional Keywords
+
+`@tag` - Tags for organizing and filtering scenarios
+`"""` (Doc Strings) - Multi-line text arguments
+`|` (Data Tables) - Tabular data for steps
+
+** Keyword List
+
+#+BEGIN_SRC python
+keyword_list = [
+    "Feature",
+    "Scenario",
+    "Scenario Outline", "Scenario Template",
+    "Examples", "Example",
+    "Given",
+    "When",
+    "Then",
+    "And",
+    "But",
+    "*",
+    '"""',
+    "'''",
+    "|",
+    "@",
+]
+#+END_SRC
